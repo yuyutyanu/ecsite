@@ -1,0 +1,149 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+html {
+    height: 100%;
+}
+body {
+    height: 100%;
+    background-color: #e0ebaf;
+    font-family: monospace;
+}
+.login {
+    width: 20%;
+    background-color: #006e54;
+    height: 80px;
+    right: 0;
+    position: absolute;
+    text-align: right;
+    border-radius: 0% 0% 0% 100%;
+}
+.login a {
+    margin-right: 5%;
+    color: black;
+    font-size: 20px;
+}
+header {
+    background-color: #b8d200;
+    box-shadow: 10px 10px 10px;
+    width: 100%;
+    height: 100px;
+    margin-bottom: 50px;
+}
+header input {
+    margin-left: 5%;
+    margin-top: 35px;
+    width: 45%;
+    height: 30px;
+    margin-right: 15px;
+}
+header button {
+    height: 60px;
+    width: 60px;
+    background-color: white;
+    border: solid 1px #762f07;
+    border-radius: 50% 50% 50% 50%;
+}
+.header_bottom {
+    margin-top: 50px;
+    background-color: #b8d200;
+    height: 50px;
+    box-shadow: 10px 10px 10px;
+}
+.sidebar {
+    background-color: rgba(0, 0, 0, 0);
+    color: black;
+    position: absolute;
+    right: 0;
+    width: 15%;
+    height: 100%;
+    position: fixed;
+}
+.sidebar li {
+    list-style: none;
+    font-size: 20px;
+    border-bottom: solid 5px #762f07;
+    width: 70%;
+    margin-top: 114px;
+    text-align: center;
+    z-index: 1;
+}
+.sidebar li:hover {
+    border-bottom: solid 5px rgba(255, 0, 0, 0);
+}
+.products img {
+    height: 70%;
+    width: 140px;
+    padding: 10px;
+    margin-left: 10px;
+    margin-top: 10px;
+    float: left;
+    border: solid 1px;
+    margin-right: 25px;
+}
+.products a {
+    float: left;
+    margin-left: 40px;
+    margin-top: 10px;
+}
+.products p {
+    margin-left: 40px;
+}
+.products h2 {
+    margin-left: 80%;
+}
+
+.product_css0 {
+    width: 70%;
+    height: 150px;
+    background-color: white;
+    border: solid 1px #762f07;
+    box-shadow: 10px 10px 10px;
+    transition: all 1s ease;
+    font-size: 15px;
+}
+.product_css1 {
+    width: 70%;
+    height: 150px;
+    background-color: white;
+    border: solid 1px #762f07;
+    box-shadow: 10px 10px 10px;
+    transition: all 1s ease;
+    font-size: 15px;
+}
+.product_css2 {
+    width: 60%;
+    height: 150px;
+    background-color: white;
+    border: solid 1px #762f07;
+    box-shadow: 10px 10px 10px;
+    transition: all 1s ease;
+    font-size: 15px;
+}
+.product_css3 {
+    width: 50%;
+    height: 150px;
+    background-color: white;
+    border: solid 1px #762f07;
+    box-shadow: 10px 10px 10px;
+    transition: all 1s ease;
+    font-size: 15px;
+}
+.product_css4 {
+    width: 60%;
+    height: 150px;
+    background-color: white;
+    border: solid 1px #762f07;
+    box-shadow: 10px 10px 10px;
+    transition: all 1s ease;
+    font-size: 15px;
+}
+.swiper-container img {
+    width: 70%;
+    margin-left: 17%;
+}
+.swiper-container {
+    width: 60%;
+    height: 300px;
+}
