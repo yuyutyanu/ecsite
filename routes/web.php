@@ -30,26 +30,36 @@ Route::get('/detail', function (Request $request) {
     ]);
 });
 
-//ajax
+//ajax api
 Route::get('/data',function(){
 $data = Product::all();
   return $data;
 });
 
+Route::get('/search',function(Request $request){
+  $value = $request->get('value');
+  $value =  Product::where('name', 'like', '%'.$value.'%')->get();
+  return $value;
+});
+
 //マイページからカート画面にアクセスしたとき
 Route::get('/cart',function(Request $request){
-  if ($request->user()) {   //ユーザがログインしていたら
+  if (Auth::check()) {   //ユーザがログインしていたら
     $user = $request->user();
     $cart_info = App\Cart::where('user_id', $user["id"])
     ->with('product')
     ->get();
     return view('cart',["cart_info" => $cart_info]);
   }
+  else{
+    $session_cart = $request->session()->all();
+    return view('cart',["session_cart" => $session_cart]);
+  }
 });
 
 //追加処理
 Route::get('/add',function(Request $request){
-  if ($request->user()) {   //ユーザがログインしていたら
+  if (Auth::check()) {   //ユーザがログインしていたら
 
     $product_id = $request->get("id");
     $user = $request->user();
@@ -73,10 +83,23 @@ Route::get('/add',function(Request $request){
         ->with('product')
         ->get();
 
-       return view('cart',["cart_info" => $cart_info]); //carttable内容を追加
+       return view('cart',["cart_info" => $cart_info,"session_cart"=>"[]"]); //carttable内容を追加
   }
   else{
-      return view('ecsite'); //ログインしてない場合リダイレクト
+    //sessioncart 追加
+    $product_id = $request->get("id");
+    $quantity = $request->get("quantity");
+    $session_product = App\Product::where('id', $product_id)
+               ->get();
+    session(['product_id' => $session_product[0]["id"],
+             'pass' => $session_product[0]["pass"],
+             'name'=>$session_product[0]["name"],
+             'comment'=>$session_product[0]["comment"],
+             'price'=>$session_product[0]["price"],
+             'detail',$session_product[0]["detail"],
+             'quantity'=>$quantity]);
+    $session_cart = $request->session()->all();
+      return view('cart',["session_cart" => $session_cart]);
   }
 });
 
@@ -87,7 +110,7 @@ Route::get('/update',function(Request $request){
   $user = $request->user();
   $quantity = $request->get("quantity");
 
-  DB::table('cart')                        //
+  DB::table('cart')                      //
     ->where('user_id', $user["id"])      //   数量更新処理
     ->where('product_id',$product_id)    //
     ->update(['quantity' => $quantity]); //
@@ -99,17 +122,21 @@ Route::get('/update',function(Request $request){
 
 //削除処理
 Route::get('/delete',function(Request $request){
+  if (Auth::check()) {
+      $user = $request->user();
+      $product_id = $request->get("product_id");
 
-  $user = $request->user();
-  $product_id = $request->get("product_id");
+      App\Cart::where('user_id', $user["id"])
+                ->where('product_id',$product_id)
+                ->delete();
+      $cart_info = App\Cart::where('user_id', $user["id"])
+                            ->get();
 
-  App\Cart::where('user_id', $user["id"])
-            ->where('product_id',$product_id)
-            ->delete();
-  $cart_info = App\Cart::where('user_id', $user["id"])
-                        ->get();
-
-  return view('cart',["cart_info"=>$cart_info]);
+      return view('cart',["cart_info"=>$cart_info]);
+  }else{
+    $session_cart = $request->session()->flush();
+    return view('cart',["session_cart"=>$session_cart]);
+  }
 });
 
 //購入画面
@@ -119,3 +146,24 @@ Route::get('/buy',function(Request $request){
 
 Auth::routes();
 Route::get('/home', 'HomeController@index');
+
+
+Route::post('/employee','AuthController@authenticate');
+
+Route::get('/employee',function(){
+  return view('employee');
+});
+
+Route::get('/kannrisya',function(){
+  if (Auth::check()) {
+      $user = Auth::user();
+      if ($user["employee"]) {
+        return view('kannrisya');
+      }
+      else{
+        return view('/ecsite');
+      }
+  }else{
+    return view('/ecsite');
+  }
+});

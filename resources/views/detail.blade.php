@@ -18,7 +18,7 @@
 
 
     <button type="button" name="button" id="button_cart">カートに入れる</button>
-    <input type="number" name="name" value="1"  min="1" max="99" id="select_number">
+    <input type="number" name="name" value="1"  min="1" max="99" id="select_number">匹
 
 
     <footer>

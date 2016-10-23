@@ -42,8 +42,8 @@
             <a href="/login" class="swap">sign in</a>
             <a href="/register" class="swap">sign up</a>
         </div>
-        <input type="text" name="name" value="">
-        <button type="button" name="button">検索</button>
+        <input type="text" name="name" value="" id="value">
+        <button type="button" name="button" id="submit_search">検索</button>
     </header>
     <!-- Slider main container -->
   <div class="swiper-container">
@@ -68,24 +68,6 @@
     </div>
 
     <div id="vue_el">
-      <script type="text/javascript">
-      (function(){$.ajax({
- url: "/data",
- type: "GET",
- cache: false,
- dataType: "json",
- success: function(product_info){
-   for(var i=0;i<product_info.length;i++){
-     vue.$data.nukos.push(product_info[i]);
-  }
- },
- error: function(xhr, textStatus, errorThrown){
-   alert('読み込みに失敗しました、ページを更新してください');
- }
-});
-}());
-      </script>
-
       <div class='products'>
         <div v-for="nuko in nukos" class="product_css@{{($index+1)%5}}">
           <img src="/img/@{{nuko.pass}}" alt="" />

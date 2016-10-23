@@ -14,16 +14,18 @@
       </div>
     </header>
 
-
-    <div class="address">
-      <p>都道府県<p><input type="type" name="name" value="">
-      <p>市区町村<p><input type="type" name="name" value="">
-      <p>郵便番号<p><input type="type" name="name" value="">-<input type="type" name="name" value="">
-      <p>電話番号<p><input type="type" name="name" value="">
+    <div class="modoru">
+      <button type="button" name="button">▲</button>
+      <script type="text/javascript">
+        $('.modoru').click(function(){
+          location.href="/cart";
+        });
+      </script>
     </div>
-
     <?php
+    //login中のカート
     $sum=0;
+      if(Auth::check()){
           if($cart_info != "[]"){
           foreach ($cart_info as $cart_product):
               $product_id = $cart_product["product_id"];
@@ -43,14 +45,35 @@
                   </div>
               </div>
 
-
                 <?php  $sum = $sum + $product_price*$quantity; ?>
-
+                <a href='/buy'id="buy" >合計<?=$sum?>円　→　購入</a>
     <?php
            endforeach;
           }
+        }elseif($session_cart == NULL){
+          //商品全消し
+        }else{
+            //sessionカート
+          $product_pass = $session_cart["pass"];
+          $product_name = $session_cart["name"];
+          $quantity = $session_cart["quantity"];
+          $product_id = $session_cart["product_id"];
+          $product_price = $session_cart["price"];
     ?>
+    <div class="recode">
+        <img src='/img/<?=$product_pass?>' />
+        <p class="productname"><?=$product_name?></p>
+        <input class="quantity" type='number' min='1' max='99' value='<?=$quantity?>'>匹
 
-    <a href='/buy'id="buy" >合計<?=$sum?>円購入</a>
+        <div class='update_delete'>
+        <!-- 更新処理 /update?product_id=<?=$product_id?>&quantity=入力値'-->
+            <a href='/delete?product_id=<?=$product_id?>'>削除</a>
+        </div>
+    </div>
+    <?php  $sum = $sum + $product_price*$quantity; ?>
+    <a href='/buy'id="buy" >合計<?=$sum?>円　→　購入</a>
+    <?php
+    }
+    ?>
   </body>
 </html>
