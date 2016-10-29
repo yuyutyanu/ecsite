@@ -50,29 +50,24 @@
     <?php
            endforeach;
           }
-        }elseif($session_cart == NULL){
-          //商品全消し
         }else{
-            //sessionカート
-          $product_pass = $session_cart["pass"];
-          $product_name = $session_cart["name"];
-          $quantity = $session_cart["quantity"];
-          $product_id = $session_cart["product_id"];
-          $product_price = $session_cart["price"];
+        //sessionカート
+        foreach ($session_cart as $index => $recode) {
     ?>
     <div class="recode">
-        <img src='/img/<?=$product_pass?>' />
-        <p class="productname"><?=$product_name?></p>
-        <input class="quantity" type='number' min='1' max='99' value='<?=$quantity?>'>匹
+        <img src='/img/<?=$recode["pass"]?>' />
+        <p class="productname"><?=$recode["name"]?></p>
+        <input class="quantity" type='number' min='1' max='99' value='<?=$recode["quantity"]?>'>匹
 
         <div class='update_delete'>
-        <!-- 更新処理 /update?product_id=<?=$product_id?>&quantity=入力値'-->
-            <a href='/delete?product_id=<?=$product_id?>'>削除</a>
+            <a href='/delete?index=<?=$index?>'>削除</a>
         </div>
     </div>
-    <?php  $sum = $sum + $product_price*$quantity; ?>
+
+    <?php  $sum = $sum + $recode["price"]*$recode["quantity"]; ?>
     <a href='/buy'id="buy" >合計<?=$sum?>円　→　購入</a>
     <?php
+      }
     }
     ?>
   </body>

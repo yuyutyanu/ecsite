@@ -44,7 +44,7 @@ Route::get('/search',function(Request $request){
 
 //マイページからカート画面にアクセスしたとき
 Route::get('/cart',function(Request $request){
-  if (Auth::check()) {   //ユーザがログインしていたら
+  if (Auth::check()) {
     $user = $request->user();
     $cart_info = App\Cart::where('user_id', $user["id"])
     ->with('product')
@@ -52,14 +52,15 @@ Route::get('/cart',function(Request $request){
     return view('cart',["cart_info" => $cart_info]);
   }
   else{
-    $session_cart = $request->session()->all();
-    return view('cart',["session_cart" => $session_cart]);
+    $session_cart = session()->get("session_cart",[]);
+
+        return view('cart',["session_cart" => $session_cart]);
   }
 });
 
 //追加処理
 Route::get('/add',function(Request $request){
-  if (Auth::check()) {   //ユーザがログインしていたら
+  if (Auth::check()) {
 
     $product_id = $request->get("id");
     $user = $request->user();
@@ -75,7 +76,7 @@ Route::get('/add',function(Request $request){
         }                                                     //
         elseif($already[0]["quantity"]!=$quantity){//
           DB::table('cart')                        //
-              ->where('user_id', $user["id"])      //   数量だけ変更して追加
+              ->where('user_id', $user["id"])      //   あったら数量だけ変更して追加
               ->where('product_id',$product_id)    //
               ->update(['quantity' => $quantity]); //
         }                                          //
@@ -83,23 +84,37 @@ Route::get('/add',function(Request $request){
         ->with('product')
         ->get();
 
-       return view('cart',["cart_info" => $cart_info,"session_cart"=>"[]"]); //carttable内容を追加
+       return view('cart',["cart_info" => $cart_info]);
   }
   else{
-    //sessioncart 追加
+    //sessioncartに追加
     $product_id = $request->get("id");
+    $product = App\Product::find($product_id);
+
     $quantity = $request->get("quantity");
-    $session_product = App\Product::where('id', $product_id)
-               ->get();
-    session(['product_id' => $session_product[0]["id"],
-             'pass' => $session_product[0]["pass"],
-             'name'=>$session_product[0]["name"],
-             'comment'=>$session_product[0]["comment"],
-             'price'=>$session_product[0]["price"],
-             'detail',$session_product[0]["detail"],
-             'quantity'=>$quantity]);
-    $session_cart = $request->session()->all();
-      return view('cart',["session_cart" => $session_cart]);
+    $product["quantity"] = $quantity;
+
+    $session_cart = session()->get("session_cart",[]);  //
+    foreach ($session_cart as $session_product) {       //
+      if ($session_product["id"] == $product_id) {      //  すでにカートに同じ商品があるか確認
+        $already = true;                                //
+        break;                                          //
+      }else{                                            //
+        $already = false;                               //
+      }                                                 //
+    }                                                   //
+
+    if($already){
+      $session_cart = session()->get("session_cart",[]);      //  あれば追加せず返す
+      return view('cart',["session_cart" => $session_cart]);  //
+    }else{
+        $session_cart = session()->get("session_cart",[]);
+        $session_cart[] = $product;
+        session()->put("session_cart",$session_cart);
+
+        $session_cart = session()->get("session_cart",[]);
+        return view('cart',["session_cart" => $session_cart]);
+    }
   }
 });
 
@@ -134,7 +149,10 @@ Route::get('/delete',function(Request $request){
 
       return view('cart',["cart_info"=>$cart_info]);
   }else{
-    $session_cart = $request->session()->flush();
+     $index = $request->get("index");
+     $session_cart = session()->forget("session_cart.$index");
+     $session_cart = session()->get("session_cart",[]);
+
     return view('cart',["session_cart"=>$session_cart]);
   }
 });
